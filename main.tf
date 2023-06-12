@@ -2,7 +2,7 @@ resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
 
   tags = {
-    Name = "1CH-VPC"
+    Name = var.vpc_name
   }
 }
 
@@ -10,11 +10,11 @@ resource "aws_subnet" "public" {
   vpc_id     = aws_vpc.main.id
   count      = length(var.public_subnet_cidr_blocks)
   cidr_block = var.public_subnet_cidr_blocks[count.index]
-  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  availability_zone      = element(data.aws_availability_zones.available.names, count.index)
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "1CH-Public-Subnet"
+    Name = var.public_subnet_name
   }
 }
 
@@ -25,9 +25,10 @@ resource "aws_subnet" "private" {
   availability_zone = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
-    Name = "1CH-Private-Subnet"
+    Name = var.private_subnet_name
   }
 }
+
 
 data "aws_availability_zones" "available" {}
 
@@ -135,7 +136,6 @@ resource "aws_internet_gateway" "igw" {
     Name = "VPC-Internet-Gateway"
   }
 }
-
 resource "aws_instance" "public_instance" {
   count           = var.public_instance_count
   ami              = var.centos_ami
@@ -143,23 +143,24 @@ resource "aws_instance" "public_instance" {
   subnet_id        = aws_subnet.public[count.index].id
   user_data              = var.instance_user_data
 
-vpc_security_group_ids = [aws_security_group.public.id]
+  vpc_security_group_ids = [aws_security_group.public.id]
 
   tags = {
-    Name = "Public-Instance"
+    Name = var.public_instance_name
   }
 }
 
 resource "aws_instance" "private_instance" {
-  count           = var.private_instance_count  
+  count           = var.private_instance_count
   instance_type   = var.private_instance_type
   ami              = var.centos_ami
   
   subnet_id        = aws_subnet.private[count.index].id
   vpc_security_group_ids = [aws_security_group.private[count.index].id]
   user_data              = var.instance_user_data_private
-   tags = {
-    Name = "Private-Instance"
+  
+  tags = {
+    Name = var.private_instance_name
   }
 }
 
