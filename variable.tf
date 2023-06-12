@@ -13,16 +13,41 @@ variable "region" {
 variable "vpc_cidr_block" {
   description = "CIDR block for the VPC"
 }
+variable "vpc_name" {
+  description = "Name of the VPC"
+  type        = string
+}
+
 
 variable "public_subnet_cidr_blocks" {
   description = "CIDR blocks for the public subnets"
   type        = list(string)
 }
+variable "public_subnet_name" {
+  description = "Name of the public subnet"
+  type        = string
+}
+
 
 variable "private_subnet_cidr_blocks" {
   description = "CIDR blocks for the private subnets"
   type        = list(string)
 }
+variable "private_subnet_name" {
+  description = "Name of the private subnet"
+  type        = string
+}
+variable "public_instance_name" {
+  description = "Name of the public instance"
+  type        = string
+}
+variable "private_instance_name" {
+  description = "Name of the private instance"
+  type        = string
+  
+}
+
+
 
 variable "centos_ami" {
   description = "AMI ID for CentOS"
